@@ -161,9 +161,9 @@
 
   .avatar.mentor-avatar {
     background: var(--black);
-    border: 2px solid var(--amber);
-    color: var(--amber);
-    box-shadow: 0 0 12px var(--amber-glow);
+    border: 2px solid rgba(255,255,255,0.3);
+    color: var(--white);
+    box-shadow: 0 0 12px rgba(255,255,255,0.1);
     overflow: hidden;
   }
 
@@ -758,7 +758,7 @@ function addUserMessage(text) {
 
 function addMentorMessage(text) {
   const now = getTime();
-  const avatarContent = `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:22px;height:22px"><circle cx="12" cy="12" r="3" fill="#c8954a"/><path d="M12 2 L13.2 8.8 L19.6 6.4 L15.2 11.2 L22 12 L15.2 12.8 L19.6 17.6 L13.2 15.2 L12 22 L10.8 15.2 L4.4 17.6 L8.8 12.8 L2 12 L8.8 11.2 L4.4 6.4 L10.8 8.8 Z" fill="#c8954a" opacity="0.7"/></svg>`;
+  const avatarContent = `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:22px;height:22px"><circle cx="12" cy="12" r="3" fill="#ffffff"/><path d="M12 2 L13.2 8.8 L19.6 6.4 L15.2 11.2 L22 12 L15.2 12.8 L19.6 17.6 L13.2 15.2 L12 22 L10.8 15.2 L4.4 17.6 L8.8 12.8 L2 12 L8.8 11.2 L4.4 6.4 L10.8 8.8 Z" fill="#ffffff" opacity="0.7"/></svg>`;
   const html = `
     <div class="message-row mentor">
       <div class="avatar mentor-avatar">${avatarContent}</div>
@@ -784,7 +784,7 @@ function addStatusCard() {
   const cardHtml = `
     <div class="message-row mentor" style="align-items:flex-start">
       <div class="avatar mentor-avatar">
-        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:22px;height:22px"><circle cx="12" cy="12" r="3" fill="#c8954a"/><path d="M12 2 L13.2 8.8 L19.6 6.4 L15.2 11.2 L22 12 L15.2 12.8 L19.6 17.6 L13.2 15.2 L12 22 L10.8 15.2 L4.4 17.6 L8.8 12.8 L2 12 L8.8 11.2 L4.4 6.4 L10.8 8.8 Z" fill="#c8954a" opacity="0.7"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:22px;height:22px"><circle cx="12" cy="12" r="3" fill="#ffffff"/><path d="M12 2 L13.2 8.8 L19.6 6.4 L15.2 11.2 L22 12 L15.2 12.8 L19.6 17.6 L13.2 15.2 L12 22 L10.8 15.2 L4.4 17.6 L8.8 12.8 L2 12 L8.8 11.2 L4.4 6.4 L10.8 8.8 Z" fill="#ffffff" opacity="0.7"/></svg>
       </div>
       <div class="bubble-wrap" style="max-width:calc(100% - 54px); width:100%">
         <div class="status-card">
@@ -830,7 +830,7 @@ function addStatusCard() {
 // ─── TYPING ───
 function showTyping() {
   isTyping = true;
-  const avatarSvg = `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:22px;height:22px"><circle cx="12" cy="12" r="3" fill="#c8954a"/><path d="M12 2 L13.2 8.8 L19.6 6.4 L15.2 11.2 L22 12 L15.2 12.8 L19.6 17.6 L13.2 15.2 L12 22 L10.8 15.2 L4.4 17.6 L8.8 12.8 L2 12 L8.8 11.2 L4.4 6.4 L10.8 8.8 Z" fill="#c8954a" opacity="0.7"/></svg>`;
+  const avatarSvg = `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:22px;height:22px"><circle cx="12" cy="12" r="3" fill="#ffffff"/><path d="M12 2 L13.2 8.8 L19.6 6.4 L15.2 11.2 L22 12 L15.2 12.8 L19.6 17.6 L13.2 15.2 L12 22 L10.8 15.2 L4.4 17.6 L8.8 12.8 L2 12 L8.8 11.2 L4.4 6.4 L10.8 8.8 Z" fill="#ffffff" opacity="0.7"/></svg>`;
   const html = `
     <div class="typing-row" id="typing-indicator">
       <div class="avatar mentor-avatar">${avatarSvg}</div>
