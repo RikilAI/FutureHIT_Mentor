@@ -397,10 +397,12 @@ function processResponse(text) {
     const hasPain = /בעיה|כאב|מתקשה|מכביד|קשה|מסובך|מפריע|חסר|לא יכול|מתעסק|לוקח|עולה|בזבוז|תסכול/i.test(t);
     const tooShort = t.length < 35;
 
-    if (tooShort && clarify === 0) { clarify++; mentorSay(M.ideaWeak); return; }
-    if (hasIdea && !hasPain && clarify === 0) { clarify++; mentorSay(M.ideaOnlyIdea); return; }
-    if (hasPain && !hasIdea && clarify === 0) { clarify++; mentorSay(M.ideaOnlyPain); return; }
-    if (isWeak(t) && clarify === 0) { clarify++; mentorSay(M.ideaWeak); return; }
+    if (clarify === 0) {
+      if (tooShort) { clarify++; mentorSay(M.ideaWeak); return; }
+      if (hasIdea && !hasPain) { clarify++; mentorSay(M.ideaOnlyIdea); return; }
+      if (hasPain && !hasIdea) { clarify++; mentorSay(M.ideaOnlyPain); return; }
+      if (isWeak(t)) { clarify++; mentorSay(M.ideaWeak); return; }
+    }
 
     clarify = 0; stage = 1; updateProgress(1);
     mentorSay(M.personaOpen);
@@ -424,9 +426,11 @@ function processResponse(text) {
   if (stage === 2) {
     if (awaitResearch) {
       awaitResearch = false;
-      const yes = /כן|עשיתי|מחקר|חיפשתי|בדקתי|ראיתי/.test(t);
-      if (yes) { researchSub = 'findings'; mentorSay(M.researchYes); }
-      else {
+      const yes = /כן|עשיתי|מחקר|חיפשתי|בדקתי|ראיתי|yes/.test(t);
+      if (yes) {
+        researchSub = 'findings';
+        mentorSay(M.researchYes);
+      } else {
         researchSub = 'skipped';
         mentorSay(M.researchNo);
         setTimeout(() => addChoices('res2', [
@@ -447,13 +451,21 @@ function processResponse(text) {
       return;
     }
     if (researchSub === 'skipped') {
-      const cont = /ממשיך|עכשיו|continue|כן/.test(t);
+      const cont = /ממשיך|עכשיו|continue|אמשיך/.test(t);
       if (cont) {
         researchSub = null; stage = 3; updateProgress(3);
         mentorSay(M.researchSkipOk + '\n\n' + M.validationOpen);
       } else {
+        // chose "later" or anything else — hold stage, wait for research
+        researchSub = 'waiting';
         mentorSay(`בסדר. כשתחזור עם הממצאים — שתף אותם כאן ונמשיך משם.`);
       }
+      return;
+    }
+    if (researchSub === 'waiting') {
+      // user came back with research findings
+      researchSub = 'analysis';
+      mentorSay(M.researchAnalysis);
       return;
     }
     return;
@@ -484,12 +496,23 @@ function processResponse(text) {
   if (stage === 5) {
     if (awaitPeople) {
       awaitPeople = false;
-      const yes = /כן|דיברתי|ראיינתי|שוחחתי/.test(t);
-      if (yes) { peopleSub = 'findings'; mentorSay(M.peopleYes); }
-      else     { peopleSub = null; mentorSay(M.peopleNo); moveToLean(); }
+      const yes = /כן|דיברתי|ראיינתי|שוחחתי|yes/.test(t);
+      if (yes) {
+        peopleSub = 'findings';
+        mentorSay(M.peopleYes);
+      } else {
+        peopleSub = null;
+        mentorSay(M.peopleNo);
+        setTimeout(() => moveToLean(), 600);
+      }
       return;
     }
-    if (peopleSub === 'findings') { peopleSub = null; moveToLean(); return; }
+    if (peopleSub === 'findings') {
+      peopleSub = null;
+      mentorSay(`מעניין. קח את מה שלמדת ותיישם אותו על שאלת המודל העסקי — מי מהם היה הכי קרוב לשלם?`);
+      setTimeout(() => moveToLean(), 600);
+      return;
+    }
     return;
   }
 
@@ -497,18 +520,41 @@ function processResponse(text) {
   if (stage === 6) {
     if (awaitLean) {
       awaitLean = false;
-      const yes = /כן|עשיתי|פרסמתי|נחיתה|פוסט|בדקתי/.test(t);
-      if (yes) { leanSub = 'findings'; mentorSay(M.leanYes); }
-      else     { leanSub = null; mentorSay(M.leanNo); moveToSummary(); }
+      const yes = /כן|עשיתי|פרסמתי|נחיתה|פוסט|בדקתי|yes/.test(t);
+      if (yes) {
+        leanSub = 'findings';
+        mentorSay(M.leanYes);
+      } else {
+        leanSub = null;
+        mentorSay(M.leanNo);
+        setTimeout(() => moveToSummary(), 600);
+      }
       return;
     }
-    if (leanSub === 'findings') { leanSub = null; moveToSummary(); return; }
+    if (leanSub === 'findings') {
+      leanSub = null;
+      mentorSay(`טוב. זה בדיוק המידע הנכון לקחת קדימה.`);
+      setTimeout(() => moveToSummary(), 600);
+      return;
+    }
     return;
   }
 
-  // STAGE 7 — done
+  // STAGE 7 — open Q&A after summary
   if (stage === 7) {
-    mentorSay(`הסיכום מוצג למעלה. אם יש שאלה שרצית לחזור אליה — אשמח.`);
+    if (/מחקר|מתחרים|אקוסיסטם|שוק/.test(t)) {
+      mentorSay(`מחקר שוק טוב מכסה שלושה דברים:\n1. מתחרים ישירים ועקיפים — חפש ב-Google, Product Hunt, ו-App Store לפי הבעיה שאתה פותר, לא לפי שם הפתרון שלך.\n2. תלונות קיימות — Reddit, קבוצות פייסבוק, ביקורות על מתחרים — מה אנשים אומרים שחסר?\n3. מודלי הכנסה — איך המתחרים מרוויחים? Freemium? מנוי? עסקה חד פעמית? זה מלמד הרבה על מה השוק מוכן לשלם.`);
+    } else if (/פרסונה|קהל יעד|לקוח/.test(t)) {
+      mentorSay(`פרסונה טובה היא לא דמוגרפיה — היא כאב ספציפי ברגע ספציפי.\nתנסה לנסח כך: "אני פותר ל[תפקיד/מצב] שמתמודד עם [כאב ספציפי] ברגע שבו [הקשר]." כשזה עובד — אתה יודע בדיוק עם מי לדבר ומה להגיד.`);
+    } else if (/מודל עסקי|מרוויח|לשלם|תמחור/.test(t)) {
+      mentorSay(`שאלת המפתח במודל עסקי היא לא "כמה לגבות" אלא "מה גורם לאדם להוציא ארנק." שלושה מנגנונים עיקריים:\n1. חיסכון בכסף או זמן שאפשר למדוד.\n2. פחד מהפסד — רגולציה, סיכון, פספוס הזדמנות.\n3. סטטוס וגישה — משהו שהמתחרה לא יכול להשיג.\nמה מהשלושה הכי מדויק לרעיון שלך?`);
+    } else if (/ולידציה|בדיקה|לבדוק|לדבר עם/.test(t)) {
+      mentorSay(`הכלל הפשוט לשיחת ולידציה: אל תציג את הפתרון, שאל רק על הבעיה.\n"ספר לי על הפעם האחרונה שנתקלת ב..." — ואז תקשיב. אל תמכור, אל תסביר, אל תגן. רק תכיר את העולם שלהם.`);
+    } else if (/lean|נחיתה|לבדוק בלי|mvp/.test(t)) {
+      mentorSay(`Lean Validation = להראות שיש ביקוש לפני שבונים.\nשלוש גישות לפי רמת מאמץ:\n1. פוסט בקהילה רלוונטית שמציג את הפתרון — תסתכל על תגובות ושאלות.\n2. דף נחיתה עם הרשמה לרשימת המתנה — מודד כוונה.\n3. שירות ידני — תעשה בעצמך מה שהמוצר אמור לעשות, תראה אם מישהו רוצה לשלם.`);
+    } else {
+      mentorSay(`מה בדיוק אתה מנסה להבין — על הרעיון, על הפרסונה, על המודל העסקי, או על הדרך קדימה?`);
+    }
   }
 }
 
@@ -529,7 +575,9 @@ function moveToSummary() {
 
 function isWeak(t) {
   if (t.length < 28) return true;
-  return ['לא יודע','בערך','כולם','הרבה אנשים','כל מי ש','כל אחד','לא חשבתי'].some(p => t.includes(p));
+  // weak only when the phrase is the *answer* itself, not context
+  const weakPhrases = ['לא יודע','לא חשבתי','בערך','כל אחד יכול','כל אחד צריך','כולם צריכים','הרבה אנשים בכלל'];
+  return weakPhrases.some(p => t.includes(p));
 }
 
 // ── CHOICES ──
