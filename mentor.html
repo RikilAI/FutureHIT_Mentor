@@ -3,33 +3,23 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FUTURE Mentor — מנטור דיגיטלי</title>
+<title>FUTURE Mentor</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Noto+Sans+Hebrew:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Hebrew:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --pink: #FF1F8E;
-    --pink-light: #FF5BAD;
-    --pink-glow: rgba(255, 31, 142, 0.15);
-    --pink-border: rgba(255, 31, 142, 0.3);
-    --amber: #c8954a;
-    --amber-glow: rgba(200, 149, 74, 0.2);
-    --black: #0e0e0e;
-    --dark: #1a1a1a;
-    --dark-2: #222222;
-    --dark-3: #2a2a2a;
-    --surface: #0e0e0e;
-    --surface-2: #1a1a1a;
-    --surface-3: #2a2a2a;
-    --text-primary: #ffffff;
-    --text-secondary: #cccccc;
-    --text-muted: #888888;
-    --white: #ffffff;
-    --radius: 18px;
-    --radius-sm: 10px;
-    --shadow: 0 4px 24px rgba(0,0,0,0.08);
-    --shadow-pink: 0 8px 32px rgba(255, 31, 142, 0.2);
+    --bg:         #111111;
+    --surface:    #1a1a1a;
+    --surface-2:  #222222;
+    --border:     rgba(255,255,255,0.07);
+    --border-mid: rgba(255,255,255,0.13);
+    --accent:     #5b8db8;
+    --text-1:     #efefef;
+    --text-2:     #999999;
+    --text-3:     #505050;
+    --radius:     13px;
+    --radius-sm:  8px;
   }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -37,679 +27,345 @@
   html, body {
     height: 100%;
     font-family: 'Noto Sans Hebrew', sans-serif;
-    background: var(--surface);
-    color: var(--text-primary);
+    background: var(--bg);
+    color: var(--text-1);
     -webkit-font-smoothing: antialiased;
   }
 
-  /* ─── LAYOUT ─── */
   .app {
     display: flex;
     flex-direction: column;
     height: 100dvh;
-    max-width: 780px;
+    max-width: 700px;
     margin: 0 auto;
-    position: relative;
   }
 
-  /* ─── BACKGROUND GRID ─── */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image:
-      linear-gradient(rgba(255,31,142,0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,31,142,0.03) 1px, transparent 1px);
-    background-size: 32px 32px;
-    pointer-events: none;
-    z-index: 0;
-  }
+  .header { flex-shrink: 0; line-height: 0; }
+  .header img { width: 100%; display: block; object-fit: cover; max-height: 110px; }
 
-  /* ─── HEADER ─── */
-  .header {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    flex-shrink: 0;
-    line-height: 0;
-    margin-bottom: 16px;
-  }
-
-  .header img.header-banner {
-    width: 100%;
-    display: block;
-    object-fit: cover;
-  }
-
-  .header-status {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    background: rgba(255,31,142,0.12);
-    border: 1px solid rgba(255,31,142,0.2);
-    border-radius: 20px;
-    padding: 5px 12px;
-  }
-
-  .status-dot {
-    width: 7px;
-    height: 7px;
-    background: var(--pink);
-    border-radius: 50%;
-    animation: pulse-dot 2s ease-in-out infinite;
-  }
-
-  @keyframes pulse-dot {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.5; transform: scale(0.8); }
-  }
-
-  .status-text {
-    font-size: 11px;
-    color: var(--pink-light);
-    font-weight: 500;
-    letter-spacing: 0.04em;
-    white-space: nowrap;
-  }
-
-  /* ─── CHAT AREA ─── */
-  .chat-container {
-    flex: 1;
-    overflow-y: auto;
-    padding: 28px 20px 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    position: relative;
-    z-index: 1;
-    scroll-behavior: smooth;
-  }
-
-  .chat-container::-webkit-scrollbar { width: 4px; }
-  .chat-container::-webkit-scrollbar-track { background: transparent; }
-  .chat-container::-webkit-scrollbar-thumb { background: var(--surface-3); border-radius: 2px; }
-
-  /* ─── MESSAGES ─── */
-  .message-row {
-    display: flex;
-    align-items: flex-end;
-    gap: 10px;
-    animation: msg-in 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
-  }
-
-  @keyframes msg-in {
-    from { opacity: 0; transform: translateY(14px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  .message-row.mentor { flex-direction: row; }
-  .message-row.user   { flex-direction: row-reverse; }
-
-  .avatar {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Syne', sans-serif;
-    font-weight: 800;
-    font-size: 14px;
-    position: relative;
-  }
-
-  .avatar.mentor-avatar {
-    background: var(--black);
-    border: 2px solid rgba(255,255,255,0.3);
-    color: var(--white);
-    box-shadow: 0 0 12px rgba(255,255,255,0.1);
-    overflow: hidden;
-  }
-
-  .avatar.mentor-avatar img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    filter: brightness(0) invert(1);
-    padding: 6px;
-  }
-
-  .avatar.user-avatar {
-    background: var(--dark-3);
-    border: 2px solid var(--surface-3);
-    color: var(--text-secondary);
-    font-size: 13px;
-  }
-
-  .bubble-wrap {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    max-width: calc(100% - 54px);
-  }
-
-  .bubble {
-    padding: 13px 17px;
-    border-radius: var(--radius);
-    font-size: 15px;
-    line-height: 1.65;
-    font-weight: 400;
-    white-space: pre-line;
-    position: relative;
-  }
-
-  .mentor-bubble {
-    background: var(--dark-2);
-    color: var(--white);
-    border-radius: var(--radius) var(--radius) var(--radius) 4px;
-    box-shadow: var(--shadow);
-    border: 1px solid rgba(255,255,255,0.07);
-  }
-
-  .user-bubble {
-    background: var(--black);
-    color: var(--white);
-    border-radius: var(--radius) var(--radius) 4px var(--radius);
-    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
-  }
-
-  .message-time {
-    font-size: 10px;
-    color: var(--text-muted);
-    padding: 0 4px;
-  }
-  .message-row.user .message-time { text-align: left; }
-  .message-row.mentor .message-time { text-align: right; }
-
-  /* ─── TYPING INDICATOR ─── */
-  .typing-row {
-    display: flex;
-    align-items: flex-end;
-    gap: 10px;
-    animation: msg-in 0.3s ease both;
-  }
-
-  .typing-bubble {
-    background: var(--white);
-    border: 1px solid rgba(0,0,0,0.06);
-    border-radius: var(--radius) var(--radius) var(--radius) 4px;
-    padding: 14px 18px;
-    box-shadow: var(--shadow);
-    display: flex;
-    align-items: center;
-    gap: 5px;
-  }
-
-  .typing-dot {
-    width: 7px;
-    height: 7px;
-    background: var(--pink);
-    border-radius: 50%;
-    animation: typing 1.2s ease-in-out infinite;
-  }
-  .typing-dot:nth-child(2) { animation-delay: 0.2s; }
-  .typing-dot:nth-child(3) { animation-delay: 0.4s; }
-
-  @keyframes typing {
-    0%, 100% { transform: translateY(0); opacity: 0.4; }
-    50%       { transform: translateY(-5px); opacity: 1; }
-  }
-
-  /* ─── STATUS CARD ─── */
-  .status-card {
-    background: var(--black);
-    border-radius: 20px;
-    overflow: hidden;
-    box-shadow: 0 12px 48px rgba(0,0,0,0.2), 0 0 0 1px rgba(255,31,142,0.2);
-    animation: card-reveal 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
-    margin: 4px 0;
-  }
-
-  @keyframes card-reveal {
-    from { opacity: 0; transform: translateY(20px) scale(0.97); }
-    to   { opacity: 1; transform: translateY(0) scale(1); }
-  }
-
-  .card-header {
-    background: linear-gradient(135deg, #111 0%, #1c0a11 100%);
-    padding: 20px 22px 18px;
-    border-bottom: 1px solid rgba(255,31,142,0.2);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .card-header::before {
-    content: '';
-    position: absolute;
-    top: -30px;
-    left: -30px;
-    width: 120px;
-    height: 120px;
-    background: radial-gradient(circle, rgba(255,31,142,0.2) 0%, transparent 70%);
-    pointer-events: none;
-  }
-
-  .card-logo-area {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .card-logo-area img {
-    height: 28px;
-    width: auto;
-    filter: brightness(0) invert(1);
-  }
-
-  .card-logo-fallback {
-    font-family: 'Syne', sans-serif;
-    font-weight: 800;
-    font-size: 20px;
-    color: var(--white);
-    letter-spacing: 0.02em;
-  }
-
-  .card-logo-fallback span { color: var(--pink); }
-
-  .card-badge {
-    background: var(--pink);
-    color: var(--white);
-    font-size: 11px;
-    font-weight: 600;
-    padding: 4px 10px;
-    border-radius: 20px;
-    letter-spacing: 0.05em;
-    font-family: 'Syne', sans-serif;
-  }
-
-  .card-title {
-    font-family: 'Syne', sans-serif;
-    font-size: 13px;
-    font-weight: 600;
-    color: rgba(255,255,255,0.5);
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    margin-top: 10px;
-  }
-
-  .card-body {
-    padding: 4px 0;
-  }
-
-  .card-section {
-    padding: 16px 22px;
-    border-bottom: 1px solid rgba(255,255,255,0.05);
-    animation: section-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
-  }
-
-  .card-section:last-child { border-bottom: none; }
-
-  .card-section:nth-child(1) { animation-delay: 0.1s; }
-  .card-section:nth-child(2) { animation-delay: 0.25s; }
-  .card-section:nth-child(3) { animation-delay: 0.4s; }
-
-  @keyframes section-in {
-    from { opacity: 0; transform: translateX(-10px); }
-    to   { opacity: 1; transform: translateX(0); }
-  }
-
-  .section-label {
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--pink);
-    margin-bottom: 6px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-
-  .section-label::before {
-    content: '';
-    display: inline-block;
-    width: 14px;
-    height: 2px;
-    background: var(--pink);
-    border-radius: 1px;
-    flex-shrink: 0;
-  }
-
-  .section-content {
-    font-size: 14px;
-    line-height: 1.6;
-    color: rgba(255,255,255,0.85);
-    font-weight: 400;
-  }
-
-  .card-footer {
-    padding: 14px 22px;
-    background: rgba(255,31,142,0.06);
-    border-top: 1px solid rgba(255,31,142,0.15);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .card-footer-icon {
-    font-size: 16px;
-  }
-
-  .card-footer-text {
-    font-size: 11px;
-    color: rgba(255,255,255,0.35);
-    font-style: italic;
-  }
-
-  /* ─── DIVIDER ─── */
-  .chat-divider {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 4px 8px;
-    opacity: 0.5;
-  }
-
-  .chat-divider::before,
-  .chat-divider::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: var(--surface-3);
-  }
-
-  .divider-text {
-    font-size: 10px;
-    color: var(--text-muted);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    white-space: nowrap;
-  }
-
-  /* ─── INPUT AREA ─── */
-  .input-area {
-    position: sticky;
-    bottom: 0;
-    z-index: 100;
-    padding: 12px 16px 16px;
-    background: linear-gradient(to top, var(--surface) 80%, transparent);
-    flex-shrink: 0;
-  }
-
-  .input-inner {
-    display: flex;
-    align-items: flex-end;
-    gap: 10px;
-    background: var(--dark-2);
-    border: 1.5px solid var(--surface-3);
-    border-radius: 20px;
-    padding: 10px 10px 10px 16px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.3), 0 0 0 0px var(--pink-border);
-    transition: border-color 0.2s, box-shadow 0.2s;
-  }
-
-  .input-inner:focus-within {
-    border-color: var(--pink-border);
-    box-shadow: 0 4px 20px rgba(0,0,0,0.07), 0 0 0 3px var(--pink-glow);
-  }
-
-  #user-input {
-    flex: 1;
-    border: none;
-    outline: none;
-    font-family: 'Noto Sans Hebrew', sans-serif;
-    font-size: 15px;
-    line-height: 1.5;
-    color: var(--text-primary);
-    background: transparent;
-    resize: none;
-    min-height: 22px;
-    max-height: 120px;
-    overflow-y: auto;
-    direction: rtl;
-  }
-
-  #user-input::placeholder {
-    color: var(--text-muted);
-  }
-
-  #user-input::-webkit-scrollbar { width: 3px; }
-  #user-input::-webkit-scrollbar-thumb { background: var(--surface-3); border-radius: 2px; }
-
-  .send-btn {
-    width: 40px;
-    height: 40px;
-    background: var(--black);
-    border: none;
-    border-radius: 14px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
-    flex-shrink: 0;
-  }
-
-  .send-btn:hover {
-    background: var(--pink);
-    box-shadow: var(--shadow-pink);
-    transform: scale(1.05);
-  }
-
-  .send-btn:active { transform: scale(0.95); }
-
-  .send-btn svg {
-    width: 18px;
-    height: 18px;
-    fill: var(--white);
-    /* Flip for RTL send direction */
-    transform: scaleX(-1);
-  }
-
-  .send-btn:disabled {
-    background: var(--surface-3);
-    cursor: not-allowed;
-    transform: none;
-    box-shadow: none;
-  }
-
-  .send-btn:disabled svg { fill: var(--text-muted); }
-
-  .input-hint {
-    text-align: center;
-    font-size: 10px;
-    color: var(--text-muted);
-    margin-top: 8px;
-    letter-spacing: 0.02em;
-  }
-
-  /* ─── STEP PROGRESS BAR ─── */
   .progress-bar-wrap {
-    padding: 0 20px 2px;
     flex-shrink: 0;
+    padding: 12px 20px 9px;
+    border-bottom: 1px solid var(--border);
   }
-
-  .progress-steps {
-    display: flex;
-    align-items: center;
-    gap: 0;
-  }
-
+  .progress-steps { display: flex; align-items: center; }
   .progress-step {
     flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 4px;
+    gap: 5px;
     position: relative;
   }
-
   .progress-step:not(:last-child)::after {
     content: '';
     position: absolute;
-    top: 6px;
-    left: 0;
-    width: 100%;
-    height: 2px;
-    background: var(--surface-3);
+    top: 4px; left: 0;
+    width: 100%; height: 1px;
+    background: var(--border);
     z-index: 0;
   }
-
-  .progress-step.done:not(:last-child)::after,
-  .progress-step.active:not(:last-child)::after {
-    background: linear-gradient(to left, var(--surface-3), var(--white));
-  }
-
+  .progress-step.done:not(:last-child)::after { background: rgba(255,255,255,0.18); }
   .step-dot {
-    width: 12px;
-    height: 12px;
+    width: 9px; height: 9px;
     border-radius: 50%;
-    background: var(--surface-3);
-    border: 2px solid var(--surface-3);
+    background: var(--surface-2);
+    border: 1.5px solid var(--border-mid);
     z-index: 1;
     transition: all 0.3s ease;
-    position: relative;
+  }
+  .progress-step.active .step-dot { background: var(--text-1); border-color: var(--text-1); }
+  .progress-step.done   .step-dot { background: var(--text-3); border-color: var(--text-3); }
+  .step-label { font-size: 9px; color: var(--text-3); white-space: nowrap; }
+  .progress-step.active .step-label { color: var(--text-2); font-weight: 600; }
+
+  .chat-container {
+    flex: 1;
+    overflow-y: auto;
+    padding: 22px 18px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    scroll-behavior: smooth;
+  }
+  .chat-container::-webkit-scrollbar { width: 3px; }
+  .chat-container::-webkit-scrollbar-thumb { background: var(--surface-2); border-radius: 2px; }
+
+  .message-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 9px;
+    animation: msg-in 0.3s cubic-bezier(0.22,1,0.36,1) both;
+  }
+  @keyframes msg-in {
+    from { opacity: 0; transform: translateY(7px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .message-row.mentor { flex-direction: row; }
+  .message-row.user   { flex-direction: row-reverse; }
+
+  .avatar {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 600;
+  }
+  .avatar.mentor-avatar { background: var(--surface-2); border: 1px solid var(--border-mid); overflow: hidden; }
+  .avatar.user-avatar   { background: var(--surface); border: 1px solid var(--border); color: var(--text-3); }
+
+  .bubble-wrap { display: flex; flex-direction: column; gap: 3px; max-width: calc(100% - 44px); }
+
+  .bubble {
+    padding: 11px 15px;
+    border-radius: var(--radius);
+    font-size: 14.5px;
+    line-height: 1.72;
+    font-weight: 400;
+    white-space: pre-line;
+  }
+  .mentor-bubble {
+    background: var(--surface);
+    color: var(--text-1);
+    border-radius: var(--radius) var(--radius) var(--radius) 3px;
+    border: 1px solid var(--border);
+  }
+  .user-bubble {
+    background: var(--surface-2);
+    color: var(--text-1);
+    border-radius: var(--radius) var(--radius) 3px var(--radius);
+    border: 1px solid var(--border);
+  }
+  .message-time { font-size: 10px; color: var(--text-3); padding: 0 3px; }
+  .message-row.user   .message-time { text-align: left; }
+  .message-row.mentor .message-time { text-align: right; }
+
+  .typing-row { display: flex; align-items: flex-end; gap: 9px; animation: msg-in 0.22s ease both; }
+  .typing-bubble {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius) var(--radius) var(--radius) 3px;
+    padding: 13px 15px;
+    display: flex; align-items: center; gap: 5px;
+  }
+  .typing-dot {
+    width: 5px; height: 5px;
+    background: var(--text-3);
+    border-radius: 50%;
+    animation: typing 1.2s ease-in-out infinite;
+  }
+  .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+  .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes typing {
+    0%,100% { transform: translateY(0); opacity: 0.3; }
+    50%     { transform: translateY(-4px); opacity: 0.85; }
   }
 
-  .progress-step.active .step-dot {
-    background: var(--white);
-    border-color: var(--white);
-    box-shadow: 0 0 0 3px rgba(255,255,255,0.15);
+  .choice-wrap {
+    display: flex; flex-direction: column; gap: 6px;
+    margin-right: 39px;
+    animation: msg-in 0.28s ease both;
   }
-
-  .progress-step.done .step-dot {
-    background: var(--white);
-    border-color: var(--white);
+  .choice-btn {
+    background: transparent;
+    border: 1px solid var(--border-mid);
+    border-radius: var(--radius-sm);
+    padding: 9px 15px;
+    font-family: 'Noto Sans Hebrew', sans-serif;
+    font-size: 14px;
+    color: var(--text-2);
+    cursor: pointer;
+    text-align: right;
+    direction: rtl;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
   }
+  .choice-btn:hover { background: var(--surface-2); border-color: rgba(255,255,255,0.2); color: var(--text-1); }
+  .choice-btn:disabled { opacity: 0.3; cursor: not-allowed; }
 
-  .step-label {
-    font-size: 9px;
-    color: var(--text-muted);
-    letter-spacing: 0.04em;
-    white-space: nowrap;
+  .chat-divider { display: flex; align-items: center; gap: 10px; padding: 2px 0; }
+  .chat-divider::before, .chat-divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  .divider-text { font-size: 10px; color: var(--text-3); letter-spacing: 0.05em; text-transform: uppercase; white-space: nowrap; }
+
+  .summary-card {
+    background: var(--surface);
+    border: 1px solid var(--border-mid);
+    border-radius: var(--radius);
+    overflow: hidden;
   }
+  .summary-card-header { padding: 14px 18px 12px; border-bottom: 1px solid var(--border); }
+  .summary-card-title { font-size: 12px; font-weight: 600; color: var(--text-2); letter-spacing: 0.05em; text-transform: uppercase; }
+  .summary-section {
+    padding: 13px 18px;
+    border-bottom: 1px solid var(--border);
+    animation: section-in 0.35s cubic-bezier(0.22,1,0.36,1) both;
+  }
+  .summary-section:last-child { border-bottom: none; }
+  .summary-section:nth-child(1) { animation-delay: 0.07s; }
+  .summary-section:nth-child(2) { animation-delay: 0.16s; }
+  .summary-section:nth-child(3) { animation-delay: 0.25s; }
+  .summary-section:nth-child(4) { animation-delay: 0.34s; }
+  @keyframes section-in {
+    from { opacity: 0; transform: translateX(-5px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+  .summary-label { font-size: 10px; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase; color: var(--accent); margin-bottom: 5px; }
+  .summary-content { font-size: 13.5px; line-height: 1.68; color: var(--text-2); }
+  .summary-card-footer { padding: 11px 18px; border-top: 1px solid var(--border); }
+  .summary-footer-text { font-size: 11px; color: var(--text-3); }
 
-  .progress-step.active .step-label { color: var(--white); font-weight: 600; }
-  .progress-step.done .step-label { color: var(--text-secondary); }
+  .input-area {
+    flex-shrink: 0;
+    padding: 9px 14px 13px;
+    border-top: 1px solid var(--border);
+    background: var(--bg);
+  }
+  .input-inner {
+    display: flex; align-items: flex-end; gap: 9px;
+    background: var(--surface);
+    border: 1px solid var(--border-mid);
+    border-radius: var(--radius);
+    padding: 9px 9px 9px 13px;
+    transition: border-color 0.2s;
+  }
+  .input-inner:focus-within { border-color: rgba(255,255,255,0.2); }
+  #user-input {
+    flex: 1; border: none; outline: none;
+    font-family: 'Noto Sans Hebrew', sans-serif;
+    font-size: 14.5px; line-height: 1.5;
+    color: var(--text-1); background: transparent;
+    resize: none; min-height: 22px; max-height: 120px;
+    overflow-y: auto; direction: rtl;
+  }
+  #user-input::placeholder { color: var(--text-3); }
+  .send-btn {
+    width: 34px; height: 34px;
+    background: var(--surface-2);
+    border: 1px solid var(--border-mid);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.15s, border-color 0.15s;
+    flex-shrink: 0;
+  }
+  .send-btn:hover { background: var(--accent); border-color: var(--accent); }
+  .send-btn:active { transform: scale(0.95); }
+  .send-btn svg { width: 15px; height: 15px; fill: var(--text-2); transform: scaleX(-1); }
+  .send-btn:hover svg { fill: #fff; }
+  .send-btn:disabled { opacity: 0.25; cursor: not-allowed; transform: none; }
+  .input-hint { text-align: center; font-size: 10px; color: var(--text-3); margin-top: 6px; }
 
-  /* ─── SCROLL ANCHOR ─── */
   #chat-end { height: 1px; flex-shrink: 0; }
 
-  /* ─── RESPONSIVE ─── */
   @media (max-width: 480px) {
-    .header { height: auto; padding: 0; }
-    .chat-container { padding: 20px 14px 12px; }
-    .input-area { padding: 10px 12px 14px; }
-    .bubble { font-size: 14px; padding: 11px 15px; }
-    .status-text { display: none; }
-    .progress-bar-wrap { padding: 0 14px 2px; }
+    .chat-container { padding: 14px 13px 8px; }
+    .input-area { padding: 7px 11px 11px; }
+    .bubble { font-size: 14px; }
+    .step-label { font-size: 8px; }
   }
 </style>
 </head>
 <body>
 <div class="app">
 
-  <!-- HEADER -->
   <header class="header">
-    <img src="HEADER1.jpg" alt="המנטור הדיגיטלי של FUTURE" class="header-banner">
+    <img src="HEADER1.jpg" alt="FUTURE Mentor">
   </header>
 
-  <!-- PROGRESS BAR -->
   <div class="progress-bar-wrap">
     <div class="progress-steps" id="progress-steps">
-      <div class="progress-step active" data-step="0">
-        <div class="step-dot"></div>
-        <span class="step-label">הרעיון</span>
-      </div>
-      <div class="progress-step" data-step="1">
-        <div class="step-dot"></div>
-        <span class="step-label">הכאב</span>
-      </div>
-      <div class="progress-step" data-step="2">
-        <div class="step-dot"></div>
-        <span class="step-label">קהל יעד</span>
-      </div>
-      <div class="progress-step" data-step="3">
-        <div class="step-dot"></div>
-        <span class="step-label">Early Adopters</span>
-      </div>
-      <div class="progress-step" data-step="4">
-        <div class="step-dot"></div>
-        <span class="step-label">סיכום</span>
-      </div>
+      <div class="progress-step active"  data-step="0"><div class="step-dot"></div><span class="step-label">רעיון וכאב</span></div>
+      <div class="progress-step"         data-step="1"><div class="step-dot"></div><span class="step-label">פרסונה</span></div>
+      <div class="progress-step"         data-step="2"><div class="step-dot"></div><span class="step-label">מחקר</span></div>
+      <div class="progress-step"         data-step="3"><div class="step-dot"></div><span class="step-label">בחינת הרעיון</span></div>
+      <div class="progress-step"         data-step="4"><div class="step-dot"></div><span class="step-label">מודל עסקי</span></div>
+      <div class="progress-step"         data-step="5"><div class="step-dot"></div><span class="step-label">ולידציה</span></div>
+      <div class="progress-step"         data-step="6"><div class="step-dot"></div><span class="step-label">Lean Test</span></div>
+      <div class="progress-step"         data-step="7"><div class="step-dot"></div><span class="step-label">סיכום</span></div>
     </div>
   </div>
 
-  <!-- CHAT -->
   <div class="chat-container" id="chat">
     <div id="chat-end"></div>
   </div>
 
-  <!-- INPUT -->
   <div class="input-area">
     <div class="input-inner">
-      <textarea
-        id="user-input"
-        placeholder="כתוב כאן את התשובה שלך..."
-        rows="1"
-        dir="rtl"
-      ></textarea>
+      <textarea id="user-input" placeholder="כתוב כאן..." rows="1" dir="rtl"></textarea>
       <button class="send-btn" id="send-btn" onclick="sendMessage()" title="שלח">
-        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
-        </svg>
+        <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
       </button>
     </div>
-    <div class="input-hint">Enter לשליחה · Shift+Enter לשורה חדשה</div>
-    <div class="input-hint" style="margin-top:6px; opacity:0.5;">🔒 השיחה פרטית, אינה נשמרת או מתועדת ונמחקת עם סגירת הדף</div>
+    <div class="input-hint">Enter לשליחה · Shift+Enter לשורה חדשה · השיחה אינה נשמרת</div>
   </div>
 
 </div>
-
 <script>
-// ─── STATE ───
-let step = 0;
+const AVT = `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:17px;height:17px;display:block"><circle cx="12" cy="8" r="4" stroke="#888" stroke-width="1.5"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="#888" stroke-width="1.5" stroke-linecap="round"/></svg>`;
+
+// ── STATE ──
+let stage = 0;
+let clarify = 0;
 let isTyping = false;
+let awaitResearch = false;
+let awaitPeople   = false;
+let awaitLean     = false;
+let researchSub = null;
+let peopleSub   = null;
+let leanSub     = null;
 
-const STEPS = [
-  { label: 'הרעיון', active: true },
-  { label: 'הכאב' },
-  { label: 'קהל יעד' },
-  { label: 'Early Adopters' },
-  { label: 'סיכום' }
-];
+// ── MESSAGES ──
+const M = {
+  welcome: `איזה כיף שבאת!\nאני המנטור הדיגיטלי של FUTURE — מרכז היזמות והחדשנות.\nאני כאן בשבילך כדי לחשוב איתך על הרעיון שלך.\nבוא נתחיל בזה שתספר לי בקצרה על המיזם שלך ועל איזו בעיה הוא פותר.`,
 
-const MENTOR_RESPONSES = [
-  // Step 0 → after welcome (user's first message)
-  `מעניין מאוד! עכשיו בוא נחפור קצת עמוק יותר. 🔍
+  ideaOnlyIdea: `הבנתי שיש לך פתרון בראש. לפני שנדבר עליו — מה הבעיה שגרמה לך לחשוב עליו מלכתחילה?\nכשמגדירים את הבעיה קודם, הרעיון נהיה הרבה יותר ממוקד.`,
 
-ספר לי — מי הסובל הכי הרבה מהבעיה הזו? תנסה לתאר לי אדם ספציפי, לא קבוצה כללית. למשל: ״בחור בן 25 שעובד בחברת הייטק ומתקשה ב...״`,
+  ideaOnlyPain: `הבנתי את הכאב. אבל איזה פתרון אתה מציע לו? מה הרעיון שלך בדיוק?`,
 
-  // Step 1 → after pain description
-  `אוקיי, מתחיל להתבהר. שאלה חשובה עכשיו:
+  ideaWeak: `זה עוד קצת כללי. תן לי לשאול אחרת: מה קורה לאדם שחווה את הבעיה הזאת ביום רגיל? ומה הפתרון שלך עושה שלא קיים היום?`,
 
-אם תוכל לגשת מחר לעשרה אנשים שסובלים מהבעיה הזו — מאיפה היית מוצא אותם? איפה הם מתקבצים? (פיזית או דיגיטלית)
+  personaOpen: `טוב, יש לנו את הרעיון ואת הכאב.\nעכשיו בוא נגדיר למי אנחנו פותרים. אנחנו קוראים לזה "פרסונה" — תמונה של אדם אחד ספציפי שהבעיה הזאת הכי רלוונטית לו. לא קבוצה, לא "כולם" — אדם אחד.\nתאר לי אותו: בן כמה, מה הוא עושה, ואיך הבעיה הזאת נראית בחייו?`,
 
-זה יעזור לנו להגדיר את ה-Early Adopters שלך — אלה האנשים הראשונים שיאמצו את הפתרון.`,
+  personaWeak: `הפרסונה עדיין קצת רחבה. כשמנסים לדבר עם כולם — בסוף לא מגיעים לאף אחד.\nחשוב על הלקוח הראשון שישלם לך — לא הגדול ביותר, אלא זה שהכאב שלו הכי בוער. מי הוא?`,
 
-  // Step 2 → after target audience
-  null // triggers STATUS CARD
-];
+  researchOpen: `כדי לבחון רעיון לעומק, חשוב קודם להכיר את האקוסיסטם שאתה נכנס אליו — מה קיים כבר, מי המתחרים, אילו מודלים עסקיים פועלים בשוק הזה, ומה אנשים מתלוננים עליו.\nמחקר דיגיטלי מוקדם חוסך טעויות יקרות.\nעשית מחקר כזה על עולם הבעיה?`,
 
-// ─── INIT ───
+  researchYes: `מצוין. תשתף מה מצאת — מה קיים בשוק, אילו מתחרים זיהית, ומה למדת על המודלים שפועלים בתחום?`,
+
+  researchNo: `בסדר. כדאי מאוד לעשות את זה לפני שממשיכים — זה משנה את כל הדיון.\nחפש מתחרים ישירים ועקיפים, ראה מה אנשים מתלוננים עליהם בפורומים, והסתכל אילו מודלי הכנסה קיימים בתחום.\nרוצה להמשיך עכשיו בלי המחקר, או לחזור אחרי שתעשה אותו?`,
+
+  researchAnalysis: `קראתי. שאלה אחת לפני שנמשיך: מה בין כל מה שמצאת הכי מפתיע אותך — ומה זה אומר על הרעיון שלך?`,
+
+  researchSkipOk: `בסדר, נמשיך. חשוב שתדע שחלק מהשאלות הבאות יהיו קלות יותר אחרי מחקר.`,
+
+  validationOpen: `עכשיו בוא נבחן את הרעיון לאורה של כל מה שיש לנו.\nשלוש שאלות שאני שואל כל יזם בשלב הזה:\nראשית — למה עכשיו? מה השתנה לאחרונה שגורם לרעיון הזה להיות רלוונטי דווקא היום?\nשנית — מה ההנחה המרכזית שאם תגלה שהיא לא נכונה, הרעיון מתמוטט?\nשלישית — מה הסיבה שדווקא אתה הכי מתאים לפתור את הבעיה הזאת?`,
+
+  validationWeak: `חלק מהתשובות עדיין צריכות חידוד. נתמקד ב"למה עכשיו" — כי זו השאלה שכל משקיע ולקוח ישאל.\nאם הרעיון הזה היה יכול לקום לפני חמש שנים — למה לא קם? מה השתנה? טכנולוגיה, רגולציה, שינוי התנהגות?`,
+
+  bizOpen: `עכשיו השאלה שיזמים הכי אוהבים לדחות.\nמי משלם, על מה בדיוק, ומה גורם לו לפתוח את הארנק? לא צריך מספרים מדויקים — אני רוצה להבין את המנגנון.`,
+
+  bizWeak: `המנגנון עדיין לא ברור לי. יש הבדל בין "מי ישתמש" לבין "מי ישלם" — הם לא תמיד אותו אדם.\nתחשוב על הרגע שבו מישהו מחליט לשלם — מה גרם לו להחלטה הזאת? מה הוא מרוויח?`,
+
+  peopleOpen: `עד עכשיו עבדנו על ההנחות. עכשיו השאלה היא כמה מהן נבדקו עם אנשים אמיתיים.\nדיברת עם אנשים שמתאימים לפרסונה שתיארת — שיחות עומק, לא "שאלתי חבר"?`,
+
+  peopleYes: `מה למדת? מה אישר את מה שחשבת — ומה הפתיע אותך?`,
+
+  peopleNo: `בסדר. שלוש שיחות עומק יכולות לשנות לגמרי את הכיוון ולחסוך חודשים של בנייה לא נכונה.\nהשאלה שמומלץ לפתוח איתה: "ספר לי על הפעם האחרונה שנתקלת בבעיה הזאת." — אל תמכור, רק תקשיב.`,
+
+  leanOpen: `לפני שמפתחים כלום — יש שלב שהרבה יזמים מדלגים עליו ומשלמים על זה מאוחר יותר.\nהרעיון פשוט: להציע את הפתרון כאילו הוא כבר קיים ולראות מה קורה. דף נחיתה עם הרשמה, פוסט בקהילה רלוונטית, שירות ידני שאתה מדמה בעצמך.\nעשית משהו כזה?`,
+
+  leanYes: `מה עשית ומה קיבלת בחזרה?`,
+
+  leanNo: `בסדר. הגרסה הכי מינימלית: פוסט בקהילה רלוונטית שמציג את הפתרון כאילו הוא קיים — ותראה מי מגיב, מי שואל, מי מבקש גישה.`,
+};
+
+// ── INIT ──
 window.addEventListener('DOMContentLoaded', () => {
-  setTimeout(() => {
-    addMentorMessage(`איזה כיף שבאת! אני המנטור הדיגיטלי של Future, מרכז היזמות והחדשנות . אני כאן בשבילך! בוא נתחיל בזה שתספר לי בקצרה על המיזם שלך ועל איזו בעיה הוא פותר.`);
-  }, 600);
   setupInput();
   updateProgress(0);
+  setTimeout(() => mentorSay(M.welcome), 500);
 });
 
-// ─── SEND ───
+// ── SEND ──
 function sendMessage() {
   const input = document.getElementById('user-input');
   const text = input.value.trim();
@@ -719,195 +375,284 @@ function sendMessage() {
   input.value = '';
   input.style.height = 'auto';
   document.getElementById('send-btn').disabled = true;
-
-  const responseIndex = step;
-  step++;
-  updateProgress(step);
+  document.querySelectorAll('.choice-btn').forEach(b => b.disabled = true);
 
   setTimeout(() => {
     showTyping();
-    const delay = 1500 + Math.random() * 800;
     setTimeout(() => {
       hideTyping();
-      if (MENTOR_RESPONSES[responseIndex] === null) {
-        // Show status card
-        addStatusCard();
-        updateProgress(4);
-      } else if (MENTOR_RESPONSES[responseIndex]) {
-        addMentorMessage(MENTOR_RESPONSES[responseIndex]);
-      }
       document.getElementById('send-btn').disabled = false;
-    }, delay);
-  }, 400);
+      processResponse(text);
+    }, 1100 + Math.random() * 800);
+  }, 280);
 }
 
-// ─── ADD MESSAGES ───
+// ── LOGIC ──
+function processResponse(text) {
+  const t = text.trim();
+
+  // STAGE 0 — idea + pain
+  if (stage === 0) {
+    const hasIdea = /רעיון|בונה|אפליקציה|פלטפורמה|שירות|מוצר|פרויקט|מיזם|כלי|מערכת/i.test(t);
+    const hasPain = /בעיה|כאב|מתקשה|מכביד|קשה|מסובך|מפריע|חסר|לא יכול|מתעסק|לוקח|עולה|בזבוז|תסכול/i.test(t);
+    const tooShort = t.length < 35;
+
+    if (tooShort && clarify === 0) { clarify++; mentorSay(M.ideaWeak); return; }
+    if (hasIdea && !hasPain && clarify === 0) { clarify++; mentorSay(M.ideaOnlyIdea); return; }
+    if (hasPain && !hasIdea && clarify === 0) { clarify++; mentorSay(M.ideaOnlyPain); return; }
+    if (isWeak(t) && clarify === 0) { clarify++; mentorSay(M.ideaWeak); return; }
+
+    clarify = 0; stage = 1; updateProgress(1);
+    mentorSay(M.personaOpen);
+    return;
+  }
+
+  // STAGE 1 — persona
+  if (stage === 1) {
+    if (isWeak(t) && clarify === 0) { clarify++; mentorSay(M.personaWeak); return; }
+    clarify = 0; stage = 2; updateProgress(2);
+    awaitResearch = true;
+    mentorSay(M.researchOpen);
+    setTimeout(() => addChoices('res', [
+      { label: 'כן, עשיתי מחקר', value: 'yes' },
+      { label: 'לא עדיין', value: 'no' }
+    ]), 200);
+    return;
+  }
+
+  // STAGE 2 — research
+  if (stage === 2) {
+    if (awaitResearch) {
+      awaitResearch = false;
+      const yes = /כן|עשיתי|מחקר|חיפשתי|בדקתי|ראיתי/.test(t);
+      if (yes) { researchSub = 'findings'; mentorSay(M.researchYes); }
+      else {
+        researchSub = 'skipped';
+        mentorSay(M.researchNo);
+        setTimeout(() => addChoices('res2', [
+          { label: 'אמשיך עכשיו', value: 'continue' },
+          { label: 'אחזור עם ממצאים', value: 'later' }
+        ]), 200);
+      }
+      return;
+    }
+    if (researchSub === 'findings') {
+      researchSub = 'analysis';
+      mentorSay(M.researchAnalysis);
+      return;
+    }
+    if (researchSub === 'analysis') {
+      researchSub = null; stage = 3; updateProgress(3);
+      mentorSay(M.validationOpen);
+      return;
+    }
+    if (researchSub === 'skipped') {
+      const cont = /ממשיך|עכשיו|continue|כן/.test(t);
+      if (cont) {
+        researchSub = null; stage = 3; updateProgress(3);
+        mentorSay(M.researchSkipOk + '\n\n' + M.validationOpen);
+      } else {
+        mentorSay(`בסדר. כשתחזור עם הממצאים — שתף אותם כאן ונמשיך משם.`);
+      }
+      return;
+    }
+    return;
+  }
+
+  // STAGE 3 — validation
+  if (stage === 3) {
+    if (isWeak(t) && clarify === 0) { clarify++; mentorSay(M.validationWeak); return; }
+    clarify = 0; stage = 4; updateProgress(4);
+    mentorSay(M.bizOpen);
+    return;
+  }
+
+  // STAGE 4 — biz model
+  if (stage === 4) {
+    if (isWeak(t) && clarify === 0) { clarify++; mentorSay(M.bizWeak); return; }
+    clarify = 0; stage = 5; updateProgress(5);
+    awaitPeople = true;
+    mentorSay(M.peopleOpen);
+    setTimeout(() => addChoices('ppl', [
+      { label: 'כן, דיברתי עם אנשים', value: 'yes' },
+      { label: 'לא עדיין', value: 'no' }
+    ]), 200);
+    return;
+  }
+
+  // STAGE 5 — people
+  if (stage === 5) {
+    if (awaitPeople) {
+      awaitPeople = false;
+      const yes = /כן|דיברתי|ראיינתי|שוחחתי/.test(t);
+      if (yes) { peopleSub = 'findings'; mentorSay(M.peopleYes); }
+      else     { peopleSub = null; mentorSay(M.peopleNo); moveToLean(); }
+      return;
+    }
+    if (peopleSub === 'findings') { peopleSub = null; moveToLean(); return; }
+    return;
+  }
+
+  // STAGE 6 — lean
+  if (stage === 6) {
+    if (awaitLean) {
+      awaitLean = false;
+      const yes = /כן|עשיתי|פרסמתי|נחיתה|פוסט|בדקתי/.test(t);
+      if (yes) { leanSub = 'findings'; mentorSay(M.leanYes); }
+      else     { leanSub = null; mentorSay(M.leanNo); moveToSummary(); }
+      return;
+    }
+    if (leanSub === 'findings') { leanSub = null; moveToSummary(); return; }
+    return;
+  }
+
+  // STAGE 7 — done
+  if (stage === 7) {
+    mentorSay(`הסיכום מוצג למעלה. אם יש שאלה שרצית לחזור אליה — אשמח.`);
+  }
+}
+
+function moveToLean() {
+  stage = 6; updateProgress(6);
+  awaitLean = true;
+  mentorSay(M.leanOpen);
+  setTimeout(() => addChoices('lean', [
+    { label: 'כן, בדקתי כך', value: 'yes' },
+    { label: 'לא עדיין', value: 'no' }
+  ]), 200);
+}
+
+function moveToSummary() {
+  stage = 7; updateProgress(7);
+  addSummaryCard();
+}
+
+function isWeak(t) {
+  if (t.length < 28) return true;
+  return ['לא יודע','בערך','כולם','הרבה אנשים','כל מי ש','כל אחד','לא חשבתי'].some(p => t.includes(p));
+}
+
+// ── CHOICES ──
+function addChoices(id, choices) {
+  insertBeforeEnd(`<div class="choice-wrap" id="c-${id}">${
+    choices.map(c => `<button class="choice-btn" onclick="pick('${c.value}','${id}',this)">${c.label}</button>`).join('')
+  }</div>`);
+  scrollToBottom();
+}
+function pick(value, id, btn) {
+  document.querySelectorAll(`#c-${id} .choice-btn`).forEach(b => b.disabled = true);
+  document.getElementById('user-input').value = btn.textContent;
+  sendMessage();
+}
+
+// ── MESSAGES ──
+function mentorSay(text) {
+  const now = getTime();
+  insertBeforeEnd(`<div class="message-row mentor">
+    <div class="avatar mentor-avatar">${AVT}</div>
+    <div class="bubble-wrap">
+      <div class="bubble mentor-bubble">${esc(text)}</div>
+      <div class="message-time">${now}</div>
+    </div>
+  </div>`);
+  scrollToBottom();
+}
+
 function addUserMessage(text) {
   const now = getTime();
-  const html = `
-    <div class="message-row user">
-      <div class="avatar user-avatar">אתה</div>
-      <div class="bubble-wrap">
-        <div class="bubble user-bubble">${escapeHtml(text)}</div>
-        <div class="message-time">${now}</div>
-      </div>
+  insertBeforeEnd(`<div class="message-row user">
+    <div class="avatar user-avatar">אתה</div>
+    <div class="bubble-wrap">
+      <div class="bubble user-bubble">${esc(text)}</div>
+      <div class="message-time">${now}</div>
     </div>
-  `;
-  insertBeforeEnd(html);
+  </div>`);
   scrollToBottom();
 }
 
-function addMentorMessage(text) {
-  const now = getTime();
-  const avatarContent = `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:22px;height:22px"><circle cx="12" cy="12" r="3" fill="#ffffff"/><path d="M12 2 L13.2 8.8 L19.6 6.4 L15.2 11.2 L22 12 L15.2 12.8 L19.6 17.6 L13.2 15.2 L12 22 L10.8 15.2 L4.4 17.6 L8.8 12.8 L2 12 L8.8 11.2 L4.4 6.4 L10.8 8.8 Z" fill="#ffffff" opacity="0.7"/></svg>`;
-  const html = `
-    <div class="message-row mentor">
-      <div class="avatar mentor-avatar">${avatarContent}</div>
-      <div class="bubble-wrap">
-        <div class="bubble mentor-bubble">${escapeHtml(text)}</div>
-        <div class="message-time">${now}</div>
-      </div>
-    </div>
-  `;
-  insertBeforeEnd(html);
-  scrollToBottom();
-}
-
-function addStatusCard() {
-  const now = getTime();
-
-  const dividerHtml = `
-    <div class="chat-divider">
-      <span class="divider-text">סיכום שלב ראשון</span>
-    </div>
-  `;
-
-  const cardHtml = `
-    <div class="message-row mentor" style="align-items:flex-start">
-      <div class="avatar mentor-avatar">
-        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:22px;height:22px"><circle cx="12" cy="12" r="3" fill="#ffffff"/><path d="M12 2 L13.2 8.8 L19.6 6.4 L15.2 11.2 L22 12 L15.2 12.8 L19.6 17.6 L13.2 15.2 L12 22 L10.8 15.2 L4.4 17.6 L8.8 12.8 L2 12 L8.8 11.2 L4.4 6.4 L10.8 8.8 Z" fill="#ffffff" opacity="0.7"/></svg>
-      </div>
-      <div class="bubble-wrap" style="max-width:calc(100% - 54px); width:100%">
-        <div class="status-card">
-          <div class="card-header">
-            <div>
-              <div class="card-logo-area">
-                <img src="future-hit-logo.png" alt="FUTURE HIT" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
-                <div class="card-logo-fallback" style="display:none">FU<span>T</span>URE <small style="font-size:12px;opacity:0.5">by HIT</small></div>
-              </div>
-              <div class="card-title">סטטוס FUTURE</div>
-            </div>
-            <div class="card-badge">✓ שלב 1</div>
+function addSummaryCard() {
+  mentorSay(`עבדנו על הרעיון שלך לעומק. הנה מה שבנינו ביחד.`);
+  setTimeout(() => {
+    const now = getTime();
+    insertBeforeEnd(`<div class="chat-divider"><span class="divider-text">סיכום השיחה</span></div>`);
+    insertBeforeEnd(`<div class="message-row mentor" style="align-items:flex-start">
+      <div class="avatar mentor-avatar" style="margin-top:3px">${AVT}</div>
+      <div class="bubble-wrap" style="max-width:calc(100% - 44px);width:100%">
+        <div class="summary-card">
+          <div class="summary-card-header">
+            <div class="summary-card-title">סיכום — מנטור FUTURE</div>
           </div>
-          <div class="card-body">
-            <div class="card-section">
-              <div class="section-label">מה השגנו יחד</div>
-              <div class="section-content">זיהינו את הבעיה המרכזית, התחלנו לאפיין את קהל היעד הראשוני, והגדרנו איפה ה-Early Adopters שלך נמצאים</div>
-            </div>
-            <div class="card-section">
-              <div class="section-label">טיפ מהמנטור</div>
-              <div class="section-content">Early Adopters הם לא ״כולם״ — הם האנשים שהבעיה שלהם כל כך בוערת שהם כבר מחפשים פתרון. הם יסלחו לך על באגים ויתנו לך פידבק אמיתי.</div>
-            </div>
-            <div class="card-section">
-              <div class="section-label">הצעד הבא שלנו</div>
-              <div class="section-content">תשוחח עם 3 אנשים שמתאימים לפרופיל שתיארת. שאל אותם: ״ספר לי על הפעם האחרונה שנתקלת בבעיה הזו.״ הקלט ותביא לי את התובנות.</div>
-            </div>
+          <div class="summary-section">
+            <div class="summary-label">מה עבדנו עליו</div>
+            <div class="summary-content">עברנו על הרעיון והכאב שמאחוריו, הגדרנו פרסונה ראשונית, בחנו את האקוסיסטם התחרותי, בדקנו את ההנחות שהרעיון יושב עליהן, ואת המודל העסקי.</div>
           </div>
-          <div class="card-footer">
-            <span class="card-footer-icon">🚀</span>
-            <span class="card-footer-text">FUTURE — מרכז היזמות והחדשנות של HIT</span>
+          <div class="summary-section">
+            <div class="summary-label">זווית לחשיבה</div>
+            <div class="summary-content">כוחו של רעיון טוב נמדד לא בגודל הפתרון אלא בחדות הבנת הכאב. ככל שתדייק יותר את מי שסובל ומה בדיוק כואב לו, כל שאר ההחלטות — מוצר, מחיר, שיווק — נהפכות לפשוטות יותר.</div>
+          </div>
+          <div class="summary-section">
+            <div class="summary-label">שלושה צעדים מכאן</div>
+            <div class="summary-content">1. שיחת עומק עם שלושה אנשים שמתאימים לפרסונה — שאל רק על הבעיה, לא על הפתרון שלך.\n\n2. נסח משפט אחד: "אני עוזר ל[מי] לפתור [מה] — בשונה מ[מה שקיים] בזכות [מה שמיוחד בך]."\n\n3. הגדר את הגרסה הכי קטנה שאפשר לבדוק תוך שבועיים, לפני שכותבים שורת קוד אחת.</div>
+          </div>
+          <div class="summary-section">
+            <div class="summary-label">שאלה פתוחה לסיום</div>
+            <div class="summary-content">מה ההנחה שעדיין הכי מפחידה אותך? זו בדרך כלל הבדיקה הראשונה שצריך לעשות.</div>
           </div>
         </div>
         <div class="message-time">${now}</div>
       </div>
-    </div>
-  `;
-
-  insertBeforeEnd(dividerHtml);
-  insertBeforeEnd(cardHtml);
-  scrollToBottom();
+    </div>`);
+    scrollToBottom();
+  }, 350);
 }
 
-// ─── TYPING ───
+// ── TYPING ──
 function showTyping() {
   isTyping = true;
-  const avatarSvg = `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:22px;height:22px"><circle cx="12" cy="12" r="3" fill="#ffffff"/><path d="M12 2 L13.2 8.8 L19.6 6.4 L15.2 11.2 L22 12 L15.2 12.8 L19.6 17.6 L13.2 15.2 L12 22 L10.8 15.2 L4.4 17.6 L8.8 12.8 L2 12 L8.8 11.2 L4.4 6.4 L10.8 8.8 Z" fill="#ffffff" opacity="0.7"/></svg>`;
-  const html = `
-    <div class="typing-row" id="typing-indicator">
-      <div class="avatar mentor-avatar">${avatarSvg}</div>
-      <div class="typing-bubble">
-        <div class="typing-dot"></div>
-        <div class="typing-dot"></div>
-        <div class="typing-dot"></div>
-      </div>
+  insertBeforeEnd(`<div class="typing-row" id="typing-indicator">
+    <div class="avatar mentor-avatar">${AVT}</div>
+    <div class="typing-bubble">
+      <div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>
     </div>
-  `;
-  insertBeforeEnd(html);
+  </div>`);
   scrollToBottom();
 }
-
 function hideTyping() {
   isTyping = false;
   const el = document.getElementById('typing-indicator');
   if (el) el.remove();
 }
 
-// ─── PROGRESS ───
-function updateProgress(activeStep) {
-  const steps = document.querySelectorAll('.progress-step');
-  steps.forEach((el, i) => {
+// ── PROGRESS ──
+function updateProgress(active) {
+  document.querySelectorAll('.progress-step').forEach((el, i) => {
     el.classList.remove('active', 'done');
-    if (i < activeStep) el.classList.add('done');
-    else if (i === activeStep) el.classList.add('active');
+    if (i < active) el.classList.add('done');
+    else if (i === active) el.classList.add('active');
   });
 }
 
-// ─── HELPERS ───
+// ── HELPERS ──
 function insertBeforeEnd(html) {
   const chat = document.getElementById('chat');
-  const end = document.getElementById('chat-end');
-  const div = document.createElement('div');
+  const end  = document.getElementById('chat-end');
+  const div  = document.createElement('div');
   div.innerHTML = html;
-  while (div.firstChild) {
-    chat.insertBefore(div.firstChild, end);
-  }
+  while (div.firstChild) chat.insertBefore(div.firstChild, end);
 }
-
 function scrollToBottom() {
-  requestAnimationFrame(() => {
-    const end = document.getElementById('chat-end');
-    end.scrollIntoView({ behavior: 'smooth', block: 'end' });
-  });
+  requestAnimationFrame(() => document.getElementById('chat-end').scrollIntoView({ behavior: 'smooth', block: 'end' }));
 }
-
 function getTime() {
   return new Date().toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' });
 }
-
-function escapeHtml(text) {
-  return text
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/\n/g, '<br>');
+function esc(t) {
+  return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/\n/g,'<br>');
 }
-
-// ─── INPUT SETUP ───
 function setupInput() {
-  const input = document.getElementById('user-input');
-
-  input.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      sendMessage();
-    }
-  });
-
-  input.addEventListener('input', () => {
-    input.style.height = 'auto';
-    input.style.height = Math.min(input.scrollHeight, 120) + 'px';
-  });
+  const inp = document.getElementById('user-input');
+  inp.addEventListener('keydown', e => { if (e.key==='Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } });
+  inp.addEventListener('input', () => { inp.style.height='auto'; inp.style.height=Math.min(inp.scrollHeight,120)+'px'; });
 }
 </script>
 </body>
