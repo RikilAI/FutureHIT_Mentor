@@ -306,6 +306,7 @@ const AVT = `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/
 let stage = 0;
 let clarify = 0;
 let isTyping = false;
+let isTransitioning = false;
 let awaitResearch = false;
 let awaitPeople   = false;
 let awaitLean     = false;
@@ -369,7 +370,7 @@ window.addEventListener('DOMContentLoaded', () => {
 function sendMessage() {
   const input = document.getElementById('user-input');
   const text = input.value.trim();
-  if (!text || isTyping) return;
+  if (!text || isTyping || isTransitioning) return;
 
   addUserMessage(text);
   input.value = '';
@@ -404,6 +405,12 @@ function processResponse(text) {
       if (isWeak(t)) { clarify++; mentorSay(M.ideaWeak); return; }
     }
 
+    // סיבוב שני — לא מקבל תשובה קצרה מ-15 תווים
+    if (clarify >= 1 && t.length < 15) {
+      mentorSay(`אני צריך קצת יותר מזה. ספר לי: מה הרעיון, ואיזו בעיה הוא פותר?`);
+      return;
+    }
+
     clarify = 0; stage = 1; updateProgress(1);
     mentorSay(M.personaOpen);
     return;
@@ -412,6 +419,10 @@ function processResponse(text) {
   // STAGE 1 — persona
   if (stage === 1) {
     if (isWeak(t) && clarify === 0) { clarify++; mentorSay(M.personaWeak); return; }
+    if (clarify >= 1 && t.length < 15) {
+      mentorSay(`נסה שוב — אדם אחד, גיל, מה הוא עושה, ואיך הבעיה נראית בחייו.`);
+      return;
+    }
     clarify = 0; stage = 2; updateProgress(2);
     awaitResearch = true;
     mentorSay(M.researchOpen);
@@ -473,7 +484,10 @@ function processResponse(text) {
 
   // STAGE 3 — validation
   if (stage === 3) {
-    if (isWeak(t) && clarify === 0) { clarify++; mentorSay(M.validationWeak); return; }
+    const hasReasoning = /כי|כיוון|בגלל|מוכיח|ראיה|שוק|שינוי|טכנולוגיה|רגולציה|ניסיון|עבדתי|מתמחה|הבנה/.test(t);
+    if ((isWeak(t) || (!hasReasoning && t.length < 60)) && clarify === 0) {
+      clarify++; mentorSay(M.validationWeak); return;
+    }
     clarify = 0; stage = 4; updateProgress(4);
     mentorSay(M.bizOpen);
     return;
@@ -503,14 +517,16 @@ function processResponse(text) {
       } else {
         peopleSub = null;
         mentorSay(M.peopleNo);
-        setTimeout(() => moveToLean(), 600);
+        isTransitioning = true;
+        setTimeout(() => { isTransitioning = false; moveToLean(); }, 600);
       }
       return;
     }
     if (peopleSub === 'findings') {
       peopleSub = null;
       mentorSay(`מעניין. קח את מה שלמדת ותיישם אותו על שאלת המודל העסקי — מי מהם היה הכי קרוב לשלם?`);
-      setTimeout(() => moveToLean(), 600);
+      isTransitioning = true;
+      setTimeout(() => { isTransitioning = false; moveToLean(); }, 600);
       return;
     }
     return;
@@ -527,14 +543,16 @@ function processResponse(text) {
       } else {
         leanSub = null;
         mentorSay(M.leanNo);
-        setTimeout(() => moveToSummary(), 600);
+        isTransitioning = true;
+        setTimeout(() => { isTransitioning = false; moveToSummary(); }, 600);
       }
       return;
     }
     if (leanSub === 'findings') {
       leanSub = null;
       mentorSay(`טוב. זה בדיוק המידע הנכון לקחת קדימה.`);
-      setTimeout(() => moveToSummary(), 600);
+      isTransitioning = true;
+      setTimeout(() => { isTransitioning = false; moveToSummary(); }, 600);
       return;
     }
     return;
@@ -582,12 +600,15 @@ function isWeak(t) {
 
 // ── CHOICES ──
 function addChoices(id, choices) {
+  // מנע כפילות — אם כבר קיים, לא יוצר שוב
+  if (document.getElementById('c-' + id)) return;
   insertBeforeEnd(`<div class="choice-wrap" id="c-${id}">${
     choices.map(c => `<button class="choice-btn" onclick="pick('${c.value}','${id}',this)">${c.label}</button>`).join('')
   }</div>`);
   scrollToBottom();
 }
 function pick(value, id, btn) {
+  if (isTyping || isTransitioning) return;
   document.querySelectorAll(`#c-${id} .choice-btn`).forEach(b => b.disabled = true);
   document.getElementById('user-input').value = btn.textContent;
   sendMessage();
